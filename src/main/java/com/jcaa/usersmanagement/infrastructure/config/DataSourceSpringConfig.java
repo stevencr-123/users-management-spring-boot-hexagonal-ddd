@@ -13,43 +13,51 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 public class DataSourceSpringConfig {
 
-  private static final String PROP_DB_HOST     = "${db.host}";
-  private static final String PROP_DB_PORT     = "${db.port}";
-  private static final String PROP_DB_NAME     = "${db.name}";
-  private static final String PROP_DB_USERNAME = "${db.username}";
-  private static final String PROP_DB_PASSWORD = "${db.password}";
+    private static final String PROP_DB_HOST     = "${db.host}";
+    private static final String PROP_DB_PORT     = "${db.port}";
+    private static final String PROP_DB_NAME     = "${db.name}";
+    private static final String PROP_DB_USERNAME = "${db.username}";
+    private static final String PROP_DB_PASSWORD = "${db.password}";
+    private static final String PROP_DB_SSLMODE  = "${db.sslmode:disable}";
 
-  private static final String LOG_DATASOURCE_INIT = "[DataSourceSpringConfig] DataSource inicializado. host={} port={}";
+    @Value(PROP_DB_HOST)
+    private String dbHost;
 
-  @Value(PROP_DB_HOST)
-  private String dbHost;
+    @Value(PROP_DB_PORT)
+    private int dbPort;
 
-  @Value(PROP_DB_PORT)
-  private int dbPort;
+    @Value(PROP_DB_NAME)
+    private String dbName;
 
-  @Value(PROP_DB_NAME)
-  private String dbName;
+    @Value(PROP_DB_USERNAME)
+    private String dbUsername;
 
-  @Value(PROP_DB_USERNAME)
-  private String dbUsername;
+    @Value(PROP_DB_PASSWORD)
+    private String dbPassword;
 
-  @Value(PROP_DB_PASSWORD)
-  private String dbPassword;
+    @Value(PROP_DB_SSLMODE)
+    private String dbSslMode;
 
-  @Bean
-  public DataSource dataSource() {
-    final DatabaseConfig config = new DatabaseConfig(dbHost, dbPort, dbName, dbUsername, dbPassword);
+    @Bean
+    public DataSource dataSource() {
+        final DatabaseConfig config = new DatabaseConfig(dbHost, dbPort, dbName, dbUsername, dbPassword, dbSslMode);
 
-    final HikariConfig hikariConfig = new HikariConfig();
-    hikariConfig.setJdbcUrl(config.buildJdbcUrl());
-    hikariConfig.setUsername(config.username());
-    hikariConfig.setPassword(config.password());
-    hikariConfig.setMaximumPoolSize(10);
-    hikariConfig.setMinimumIdle(2);
-    hikariConfig.setConnectionTimeout(30_000);
+        final HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setDriverClassName("org.postgresql.Driver");
+        hikariConfig.setJdbcUrl(config.buildJdbcUrl());
+        hikariConfig.setUsername(config.username());
+        hikariConfig.setPassword(config.password());
 
-    log.info(LOG_DATASOURCE_INIT, dbHost, dbPort);
-    return new HikariDataSource(hikariConfig);
-  }
+        // Propiedades del driver PostgreSQL para tipado dinámico y SSL
+        hikariConfig.addDataSourceProperty("stringtype", "unspecified");
+        hikariConfig.addDataSourceProperty("sslmode", dbSslMode);
+
+        hikariConfig.setMaximumPoolSize(10);
+        hikariConfig.setMinimumIdle(2);
+        hikariConfig.setConnectionTimeout(30_000);
+
+        log.info("[DataSourceSpringConfig] DataSource inicializado en Postgres (sslmode={}). host={} port={}",
+                dbSslMode, dbHost, dbPort);
+        return new HikariDataSource(hikariConfig);
+    }
 }
-
