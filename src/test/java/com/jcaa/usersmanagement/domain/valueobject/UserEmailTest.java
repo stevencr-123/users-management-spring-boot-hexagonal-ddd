@@ -66,7 +66,7 @@ class UserEmailTest {
       strings = {
         "john.arrieta@gmail.com",
         "john-arrieta_arreita@gmail.com.co",
-        "john1234567arreita@gmail.com"
+        "john5638291arreita@gmail.com"
       })
   @DisplayName("Valida que el email tenga un formato correcto con diferentes casos")
   void shouldValidateEmailFormatWithParameters(String email) {

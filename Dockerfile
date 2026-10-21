@@ -1,15 +1,16 @@
-# Etapa 1: Construcción (Generar el JAR)
-FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
-WORKDIR /app
-COPY . .
-# Compilamos saltando los tests para no sobrecargar tu procesador Celeron
-RUN mvn clean package -DskipTests
+FROM maven:3.9.11-eclipse-temurin-17 AS build
 
-# Etapa 2: Ejecución (Ultra ligera con Java 17)
-FROM eclipse-temurin:17-jre-alpine
+WORKDIR /workspace
+COPY pom.xml ./
+COPY src ./src
+RUN mvn --batch-mode --no-transfer-progress clean package -DskipTests
+
+FROM eclipse-temurin:17-jre
+
+RUN groupadd --system spring && useradd --system --gid spring spring
 WORKDIR /app
-# Copiamos el JAR usando el nombre exacto de tu pom.xml: users-management-2.1.0.jar
-COPY --from=build /app/target/users-management-2.1.0.jar app.jar
+COPY --from=build --chown=spring:spring /workspace/target/users-management-*.jar /app/app.jar
+USER spring:spring
+
 EXPOSE 8080
-# Límite de memoria estricto para proteger tus 8GB de RAM
-ENTRYPOINT ["java", "-Xmx512m", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]
