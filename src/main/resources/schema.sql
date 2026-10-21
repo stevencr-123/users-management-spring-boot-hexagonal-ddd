@@ -21,13 +21,13 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Inserción inicial
+-- Usuario de desarrollo; cambiar esta contraseña en producción.
 INSERT INTO users (id, name, email, password, role, status)
 VALUES (
     '00000000-0000-0000-0000-000000000001',
     'Administrador',
     'admin@example.com',
-    '$2a$12$placeholderHashReplaceWithRealBCryptHash',
+    '$2a$12$XroaUgs0oEsnUlUdhXBP0Ocq59lztrgL8oM/PT00Le7ZXqqN/4b2a',
     'ADMIN',
     'ACTIVE'
 ) ON CONFLICT (id) DO NOTHING;

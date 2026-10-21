@@ -60,7 +60,7 @@ class UserPasswordTest {
   @DisplayName("Debería crear un UserPassword desde un hash y ser igual al original")
   void shouldCreateUserPasswordFromExistingHash() {
     // Arrange
-    final String rawPassword = "Abcde1234567";
+    final String rawPassword = "Abcde9081726";
     final UserPassword originalUserPassword = UserPassword.fromPlainText(rawPassword);
     final String generatedHash = originalUserPassword.value();
     // Act

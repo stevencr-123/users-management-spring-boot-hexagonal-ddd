@@ -4,6 +4,7 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.rest.dto.request.Creat
 import com.jcaa.usersmanagement.infrastructure.entrypoint.rest.dto.request.UpdateUserRestRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.rest.dto.response.ApiErrorResponse;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.rest.dto.response.UserRestResponse;
+import com.jcaa.usersmanagement.infrastructure.config.OpenApiConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * vive aquí para mantener el controlador limpio y enfocado únicamente en la lógica de despacho.
  */
 @Tag(name = "Users", description = "Gestión de usuarios: crear, consultar, actualizar y eliminar.")
+@SecurityRequirement(name = OpenApiConfig.BEARER_AUTH)
 public interface UserRestControllerDocs {
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -210,4 +213,3 @@ public interface UserRestControllerDocs {
           @PathVariable
           String id);
 }
-

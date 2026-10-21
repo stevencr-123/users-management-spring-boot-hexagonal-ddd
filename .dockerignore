@@ -1,0 +1,10 @@
+target/
+.git/
+.idea/
+.vscode/
+*.log
+
+# Secretos locales. Nunca deben versionarse.
+/.environments/
+/.env
+.env
